@@ -148,7 +148,22 @@ int main(void)
   CanFilterSetup();
   HAL_CAN_Start(&hcan);
 
-  GPIOC->BRR = 0x1UL << 11;	 // C11 LOW
+	//Setup System Clock C
+  	RCC->APB2ENR &= 0;
+	RCC->APB2ENR |= 0x1UL << 4;
+
+	//Setup Pins C5 - C12 as OUTPUT
+	GPIOC->CRL &= 0;
+	GPIOC->CRH &= 0;
+	GPIOC->CRL |= 0x33333333UL; //Initialise C0 to C7
+	GPIOC->CRH |= 0x33333UL; //Initialise C8 to C12
+
+	//Set Pin initial values
+	GPIOC->BSRR = 0x1UL << 0;	 // C0 HIGH
+	GPIOC->BSRR = 0x1UL << 1;	 // C1 HIGH
+	GPIOC->BSRR = 0x1UL << 2;	 // C2 HIGH
+	GPIOC->BRR = 0x1UL << 11;	 // C11 LOW
+	GPIOC->BSRR = 0x1UL << 12;   //C12 HIGH
 
   ScreenSetup();
 
