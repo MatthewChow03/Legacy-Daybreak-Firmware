@@ -61,8 +61,6 @@ int main(void)
 {
 	
 	int32_t tempInt32;
-	CAN_msg_t newCanMsg;
-	uint16_t acceptMessages[FILTER_LEN] = {BATT_BASE + 2, BATT_BASE + 3, BATT_BASE + 4, BATT_BASE + 6, BATT_BASE + 7, MC_BASE + 2, MC_BASE + 3, MC_BASE + 0xB, ARR_BASE};
 	uint8_t c = 0;
 	uint8_t d = 0;
 
@@ -81,7 +79,7 @@ int main(void)
 	CANInit(CAN_500KBPS);
 	//CANSetFilters(acceptMessages, FILTER_LEN);
 	InitLEDs();
-	VirtualComInit();
+	//VirtualComInit();
 	//XBeeInit();
 		
 	//GPIOA->BSRR = 0x1 << 5;
@@ -107,50 +105,18 @@ int main(void)
 	
 	
 	while(1)
-	{
-		
-
-		
-		//If a message can be received,		
-		if (CANMsgAvail())
-		{
-			
-			GPIOA->BRR = 0x1 << 5;
-			CANReceive(&CAN_rx_msg);		//Receive the msg currently in buffer
-			
-			//TEST
-			
-			if (CAN_rx_msg.id >= 0x400 && CAN_rx_msg.id < 0x500)
-			{
-				SendInt(CAN_rx_msg.id);
-				
-				vel.chars[0] = CAN_rx_msg.data[0];
-				vel.chars[1] = CAN_rx_msg.data[1];
-				vel.chars[2] = CAN_rx_msg.data[2];
-				vel.chars[3] = CAN_rx_msg.data[3];
-				
-				cur.chars[0] = CAN_rx_msg.data[4];
-				cur.chars[1] = CAN_rx_msg.data[5];
-				cur.chars[2] = CAN_rx_msg.data[6];
-				cur.chars[3] = CAN_rx_msg.data[7];
-				
-				SendString(" ");
-				SendInt( (int) (vel.float_var));
-				
-				SendString(" ");
-				SendInt( (int) (cur.float_var * 100) );
-				
-				SendLine();
-			}
-			
-			//ENDTEST
-			
-			GPIOA->BSRR = 0x1 << 5;
-			
+	{	
 			//Check the CAN ID against several known IDs
 			//Several need to be parsed, especially the ones designated for LCD and dashboard
 			//SendInt(CAN_rx_msg.id);
 			//SendLine();
+			
+		//If a message can be received,		
+		if (CANMsgAvail())
+		{
+			//GPIOA->BRR = 0x1 << 5;
+			CANReceive(&CAN_rx_msg);		//Receive the msg currently in buffer
+			//GPIOA->BSRR = 0x1 << 5;
 			switch(CAN_rx_msg.id)
 			{
 				
@@ -370,7 +336,7 @@ int main(void)
 							
 			}		
 		}
-		
 	}
-	
+		
 }
+	
