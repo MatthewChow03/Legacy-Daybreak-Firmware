@@ -337,14 +337,9 @@ int main(void)
 				//Battery under-voltage: A9
 				//Battery over-voltage: A10
 
-			//TEMP COMMENTED OUT
-			/*
-
 				GPIOA->BSRR = (CAN_rx_data[6] & 0x3) || \
 							( ( (CAN_rx_data[5] >> 2) & 0x1) << 4 ) || \
 							( ( (CAN_rx_data[5] >> 4) & 0x1F) << 6);
-
-			*/
 
 				/*
 				//A10: Check if the high voltage bit is set, meaning battery is full
