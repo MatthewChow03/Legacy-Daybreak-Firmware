@@ -1,0 +1,10 @@
+.\objects\virtual_com.o: ..\Peripherals\virtual_com\virtual_com.c
+.\objects\virtual_com.o: ..\Peripherals\virtual_com\virtual_com.h
+.\objects\virtual_com.o: C:\Users\matth\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.0\Device\Include\stm32f10x.h
+.\objects\virtual_com.o: .\RTE\_Main\RTE_Components.h
+.\objects\virtual_com.o: .\Drivers\CMSIS\Include\core_cm3.h
+.\objects\virtual_com.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\virtual_com.o: .\Drivers\CMSIS\Include\cmsis_version.h
+.\objects\virtual_com.o: .\Drivers\CMSIS\Include\cmsis_compiler.h
+.\objects\virtual_com.o: .\Drivers\CMSIS\Include\cmsis_armcc.h
+.\objects\virtual_com.o: C:\Users\matth\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.0\Device\Include\system_stm32f10x.h
