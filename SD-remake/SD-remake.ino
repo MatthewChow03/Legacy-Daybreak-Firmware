@@ -95,6 +95,7 @@ void loop()
             {
                 digitalWrite(7, HIGH); // turn led on
                 data.print(id1, HEX);  // write the ID of the CAN Message
+                data.print(": ");
                 // Serial.print(id1,HEX);
                 data.print(len, HEX); // write the length of the CAN Message
                 // Serial.print(len,HEX);
