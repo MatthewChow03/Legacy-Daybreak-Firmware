@@ -94,19 +94,34 @@ void loop()
     else if (check == 1)
     {
       sd.begin(4);
-      data = sd.open("data.txt", FILE_WRITE); // set up the file to write
+      data = sd.open("data2.txt", FILE_WRITE); // set up the file to write
 
       if (data)
       {
+
+        // digitalWrite(7, HIGH);
+        // data.print(millisecs, HEX);
+        // data.print("0");
+        // data.print(id1, HEX);
+        // for (int i = 0; i < len; i++)
+        // {
+        //   data.print(buffer[i], HEX);
+        // }
+        // data.print(len, HEX);
+        // data.print("\n");
+        // data.close();
+
         digitalWrite(7, HIGH); // turn led on
         data.print(id1, HEX);  // write the ID of the CAN Message
+        data.print(" ");
         data.print(len, HEX);  // write the length of the CAN Message
+        data.print(" ");
 
         for (int i = 0; i < len; i++)
         {
-          data.print(buffer[i]); // write the actual data in the message
+          data.print(buffer[i], HEX); // write the actual data in the message
         }
-        data.print("-");
+        data.print("  -  ");
         data.print(millisecs); // write the time stamp in milliseconds when the data was recieved
         data.print("\n");
         data.close();
