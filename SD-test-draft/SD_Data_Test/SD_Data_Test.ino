@@ -18,8 +18,7 @@ void setup()
   // see if the card is present and can be initialized:
   if (!sd.begin(4))
   {
-    while (1)
-      ; // don't do anything more:
+    while (1); // don't do anything more:
   }
 
   int canSSOffset = 0;
@@ -55,28 +54,6 @@ void loop()
   byte len = 0;
   uint8_t buffer[8] = {0};
 
-  // sd.begin(4);
-  // data = sd.open("working.txt", FILE_WRITE); // set up the file to write
-  // if (data)
-  // {
-  //   data.print("working");
-  //   data.print("-");
-  //   data.print(millisecs);
-  //   data.print("\n");
-  //   data.close();
-  // }
-
-  // sd.begin(4);
-  // data = sd.open("borking.txt", FILE_WRITE); // set up the file to write
-  // if (data)
-  // {
-  //   data.print("borking");
-  //   data.print("-");
-  //   data.print(millisecs);
-  //   data.print("\n");
-  //   data.close();
-  // }
-
   if (CAN.checkReceive() == CAN_MSGAVAIL)
   {
     CAN.readMsgBuf(&len, buffer);
@@ -90,44 +67,34 @@ void loop()
     {
       // ignore
     }
-
     else if (check == 1)
     {
       sd.begin(4);
-      data = sd.open("data2.txt", FILE_WRITE); // set up the file to write
-
+      data = sd.open("data.txt", FILE_WRITE); // set up the file to write
       if (data)
       {
+        digitalWrite(7, HIGH);
 
-        // digitalWrite(7, HIGH);
-        // data.print(millisecs, HEX);
-        // data.print("0");
-        // data.print(id1, HEX);
-        // for (int i = 0; i < len; i++)
-        // {
-        //   data.print(buffer[i], HEX);
-        // }
-        // data.print(len, HEX);
-        // data.print("\n");
-        // data.close();
-
-        digitalWrite(7, HIGH); // turn led on
-        data.print(id1, HEX);  // write the ID of the CAN Message
-        data.print(" ");
-        data.print(len, HEX);  // write the length of the CAN Message
-        data.print(" ");
-
+        // Out of 8 characters, fill the non-timestamp characters with 'D'
+        // e.g., timestamp is 0xABCD then the placeholder is 'DDDD'
+        for(int i = 0; i < 8 - (int)sizeof(millisecs) ; i++)
+        {
+          data.print('D');
+        }
+        data.print(millisecs, HEX);
+        data.print("0");
+        data.print(id1, HEX);
         for (int i = 0; i < len; i++)
         {
-          data.print(buffer[i], HEX); // write the actual data in the message
+          data.print(buffer[i], HEX);
         }
-        data.print("  -  ");
-        data.print(millisecs); // write the time stamp in milliseconds when the data was recieved
+        data.print(len, HEX);
+        data.print("     ");
+        data.print(sizeof(millisecs));
         data.print("\n");
         data.close();
       }
     }
-    
     // if the file isn't open or the button is closed, pop up an error:
     else
     {
