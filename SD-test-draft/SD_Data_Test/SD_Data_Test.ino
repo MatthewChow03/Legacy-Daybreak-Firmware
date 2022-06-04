@@ -23,7 +23,7 @@ void setup()
 
   int canSSOffset = 0;
 
-  while (CAN.begin(CAN_125KBPS) != CAN_OK)
+  while (CAN.begin(CAN_500KBPS) != CAN_OK)
   {
     canSSOffset ^= 1;
     delay(100);
@@ -70,7 +70,7 @@ void loop()
     else if (check == 1)
     {
       sd.begin(4);
-      data = sd.open("data_5.txt", FILE_WRITE); // set up the file to write
+      data = sd.open("data_6.txt", FILE_WRITE); // set up the file to write
       if (data)
       {
         digitalWrite(7, HIGH);
@@ -82,6 +82,7 @@ void loop()
         {
           digits++;
           temp_time = temp_time >>0x4;
+
         }
         // Out of 8 characters, fill the non-timestamp characters with 'D'
         // e.g., timestamp is 0xABCD then the placeholder is 'DDDD'
@@ -90,13 +91,17 @@ void loop()
           data.print('D');
         }
         data.print(millisecs, HEX);
+        data.print(" - ");
         data.print("0");
         data.print(id1, HEX);
-        for (int i = 0; i < len; i++)
+        data.print(" - ");
+        data.print(len, HEX);
+        data.print(" - ");
+        for (int i = 0; i < 8; i++)
         {
           data.print(buffer[i], HEX);
         }
-        data.print(len, HEX);
+
         // data.print("     ");
         // data.print(digits);
         // data.print("     ");
