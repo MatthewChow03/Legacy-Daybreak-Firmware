@@ -70,14 +70,22 @@ void loop()
     else if (check == 1)
     {
       sd.begin(4);
-      data = sd.open("data.txt", FILE_WRITE); // set up the file to write
+      data = sd.open("data_5.txt", FILE_WRITE); // set up the file to write
       if (data)
       {
         digitalWrite(7, HIGH);
 
+        // Count number of hex digits in the timestamp
+        unsigned long temp_time = millisecs;
+        int digits = 1;
+        while((temp_time >> 0x4) != 0x0)
+        {
+          digits++;
+          temp_time = temp_time >>0x4;
+        }
         // Out of 8 characters, fill the non-timestamp characters with 'D'
         // e.g., timestamp is 0xABCD then the placeholder is 'DDDD'
-        for(int i = 0; i < 8 - (int)sizeof(millisecs) ; i++)
+        for(int i = 0; i < 8 - digits ; i++)
         {
           data.print('D');
         }
@@ -89,8 +97,10 @@ void loop()
           data.print(buffer[i], HEX);
         }
         data.print(len, HEX);
-        data.print("     ");
-        data.print(sizeof(millisecs));
+        // data.print("     ");
+        // data.print(digits);
+        // data.print("     ");
+        // data.print(millisecs, HEX);
         data.print("\n");
         data.close();
       }
