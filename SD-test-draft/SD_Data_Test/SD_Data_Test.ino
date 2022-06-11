@@ -21,6 +21,16 @@ void setup()
     while (1); // don't do anything more:
   }
 
+  // Break when car turns on
+  data = sd.open("validate2.txt", FILE_WRITE); // set up the file to write
+  if (data)
+  {
+    data.print("\n\n");
+    data.print("*** POWER ON ***");
+    data.print("\n");
+    data.close();
+  }
+
   int canSSOffset = 0;
 
   while (CAN.begin(CAN_500KBPS) != CAN_OK)
@@ -43,11 +53,31 @@ void loop()
   int check = 1; // check if the button is on
   int buttonState = digitalRead(A0);
 
-  // if (buttonState == HIGH) {
-  //   check = 0;
-  // } else {
-  //   check = 1;
-  // }
+  if (buttonState == HIGH) {
+    check = 0;
+
+    sd.begin(4);
+    data = sd.open("validate2.txt", FILE_WRITE); // set up the file to write
+    if (data){
+      data.print("\n\n");
+      data.print("SWITCH OFF");
+      data.print("\n");
+      data.close();
+    }
+
+  } else {
+    check = 1;
+    
+    sd.begin(4);
+    data = sd.open("validate2.txt", FILE_WRITE); // set up the file to write
+    if (data){
+      data.print("\n\n");
+      data.print("SWITCH ON");
+      data.print("\n");
+      data.close();
+    }
+
+  }
 
   millisecs = millis();
   int id1 = 0;
@@ -70,7 +100,7 @@ void loop()
     else if (check == 1)
     {
       sd.begin(4);
-      data = sd.open("data_6.txt", FILE_WRITE); // set up the file to write
+      data = sd.open("validate2.txt", FILE_WRITE); // set up the file to write
       if (data)
       {
         digitalWrite(7, HIGH);
@@ -90,6 +120,7 @@ void loop()
         {
           data.print('D');
         }
+
         data.print(millisecs, HEX);
         data.print(" - ");
         data.print("0");
@@ -100,6 +131,7 @@ void loop()
         for (int i = 0; i < 8; i++)
         {
           data.print(buffer[i], HEX);
+          data.print(" ");
         }
 
         // data.print("     ");
