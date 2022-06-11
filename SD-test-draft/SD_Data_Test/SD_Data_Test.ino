@@ -21,13 +21,11 @@ void setup()
     while (1); // don't do anything more:
   }
 
-  // Break when car turns on
-  data = sd.open("validate2.txt", FILE_WRITE); // set up the file to write
+  // Write when car turns on
+  data = sd.open("validate3.txt", FILE_WRITE); // set up the file to write
   if (data)
   {
-    data.print("\n\n");
-    data.print("*** POWER ON ***");
-    data.print("\n");
+    data.print("\n\n*** POWER ON ***\n");
     data.close();
   }
 
@@ -50,42 +48,49 @@ void setup()
 
 void loop()
 {
+  // SD Log switch variables
   int check = 1; // check if the button is on
+  int previous_state = 1;
   int buttonState = digitalRead(A0);
 
+  // Check SD Log switch
+  // If the switch has changed state, write to the file that it has been toggled on or off
   if (buttonState == HIGH) {
     check = 0;
-
-    sd.begin(4);
-    data = sd.open("validate2.txt", FILE_WRITE); // set up the file to write
-    if (data){
-      data.print("\n\n");
-      data.print("SWITCH OFF");
-      data.print("\n");
-      data.close();
+    if (previous_state != check)
+    {
+      data = sd.open("validate3.txt", FILE_WRITE); // set up the file to write
+      if (data)
+      {
+        data.print("\n\n*** SWITCH OFF ***\n");
+        data.close();
+      }
+      previous_state = 0;
     }
-
   } else {
     check = 1;
-    
-    sd.begin(4);
-    data = sd.open("validate2.txt", FILE_WRITE); // set up the file to write
-    if (data){
-      data.print("\n\n");
-      data.print("SWITCH ON");
-      data.print("\n");
-      data.close();
+    if (previous_state != check)
+    {
+      data = sd.open("validate3.txt", FILE_WRITE); // set up the file to write
+      if (data)
+      {
+        data.print("\n\n*** SWITCH ON ***\n");
+        data.close();
+      }
+      previous_state = 1;
     }
-
   }
 
+  // Data writing variables
   millisecs = millis();
   int id1 = 0;
   byte len = 0;
   uint8_t buffer[8] = {0};
 
+  // Wait for CAN message to populate buffer
   if (CAN.checkReceive() == CAN_MSGAVAIL)
   {
+    // Store data from CAN header (id, length, data bytes 0-7)
     CAN.readMsgBuf(&len, buffer);
     id1 = CAN.getCanId();
 
@@ -97,10 +102,11 @@ void loop()
     {
       // ignore
     }
+    // Check if SD Log switch is toggled ON
     else if (check == 1)
     {
       sd.begin(4);
-      data = sd.open("validate2.txt", FILE_WRITE); // set up the file to write
+      data = sd.open("validate3.txt", FILE_WRITE); // set up the file to write
       if (data)
       {
         digitalWrite(7, HIGH);
@@ -121,23 +127,32 @@ void loop()
           data.print('D');
         }
 
+        // Print data
+        // Format: timestamp - id - length - date bytes 0-7
+        // DDD12345 - 626 - 8 - 01 02 03 04 05 06 07 08
         data.print(millisecs, HEX);
         data.print(" - ");
-        data.print("0");
         data.print(id1, HEX);
         data.print(" - ");
         data.print(len, HEX);
         data.print(" - ");
+
+        // Print data bytes to be formatted as 2 hex characters with a space in between
+        // E.g., if the nuber is 0x3 then place a zero in front "03"
         for (int i = 0; i < 8; i++)
         {
-          data.print(buffer[i], HEX);
+          if(buffer[i] <= 0xF)
+          {
+            data.print("0");
+            data.print(buffer[i], HEX);
+          }
+          else
+          {
+            data.print(buffer[i], HEX);
+          }
           data.print(" ");
         }
 
-        // data.print("     ");
-        // data.print(digits);
-        // data.print("     ");
-        // data.print(millisecs, HEX);
         data.print("\n");
         data.close();
       }
