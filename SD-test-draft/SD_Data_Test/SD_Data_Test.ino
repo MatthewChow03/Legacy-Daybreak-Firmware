@@ -9,6 +9,7 @@ SdFat sd;
 MCP_CAN CAN(9);
 
 unsigned long millisecs;
+int previous_state = 1;
 
 void setup()
 {
@@ -22,7 +23,7 @@ void setup()
   }
 
   // Write when car turns on
-  data = sd.open("validate3.txt", FILE_WRITE); // set up the file to write
+  data = sd.open("validate6.txt", FILE_WRITE); // set up the file to write
   if (data)
   {
     data.print("\n\n*** POWER ON ***\n");
@@ -50,16 +51,16 @@ void loop()
 {
   // SD Log switch variables
   int check = 1; // check if the button is on
-  int previous_state = 1;
   int buttonState = digitalRead(A0);
 
   // Check SD Log switch
   // If the switch has changed state, write to the file that it has been toggled on or off
+  // Switch is off
   if (buttonState == HIGH) {
     check = 0;
     if (previous_state != check)
     {
-      data = sd.open("validate3.txt", FILE_WRITE); // set up the file to write
+      data = sd.open("validate6.txt", FILE_WRITE); // set up the file to write
       if (data)
       {
         data.print("\n\n*** SWITCH OFF ***\n");
@@ -67,11 +68,12 @@ void loop()
       }
       previous_state = 0;
     }
+  // Switch is on
   } else {
     check = 1;
     if (previous_state != check)
     {
-      data = sd.open("validate3.txt", FILE_WRITE); // set up the file to write
+      data = sd.open("validate6.txt", FILE_WRITE); // set up the file to write
       if (data)
       {
         data.print("\n\n*** SWITCH ON ***\n");
@@ -106,7 +108,7 @@ void loop()
     else if (check == 1)
     {
       sd.begin(4);
-      data = sd.open("validate3.txt", FILE_WRITE); // set up the file to write
+      data = sd.open("validate6.txt", FILE_WRITE); // set up the file to write
       if (data)
       {
         digitalWrite(7, HIGH);
@@ -130,7 +132,10 @@ void loop()
         // Print data
         // Format: timestamp - id - length - date bytes 0-7
         // DDD12345 - 626 - 8 - 01 02 03 04 05 06 07 08
-        data.print(millisecs, HEX);
+        
+        //data.print(millisecs, HEX);
+        data.print(millisecs/1000);
+
         data.print(" - ");
         data.print(id1, HEX);
         data.print(" - ");
