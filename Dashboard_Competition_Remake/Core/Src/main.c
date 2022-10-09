@@ -177,11 +177,11 @@ int main(void)
 //	GPIOC->CRH |= 0x33333UL; //Initialise C8 to C12
 
 	//Set Pin initial values
-	GPIOC->BSRR = 0x1UL << 0;	 // C0 HIGH
-	GPIOC->BSRR = 0x1UL << 1;	 // C1 HIGH
-	GPIOC->BSRR = 0x1UL << 2;	 // C2 HIGH
-	GPIOC->BRR = 0x1UL << 11;	 // C11 LOW
-	GPIOC->BSRR = 0x1UL << 12;   //C12 HIGH
+//	GPIOC->BSRR = 0x1UL << 0;	 // C0 HIGH
+//	GPIOC->BSRR = 0x1UL << 1;	 // C1 HIGH
+//	GPIOC->BSRR = 0x1UL << 2;	 // C2 HIGH
+//	GPIOC->BRR = 0x1UL << 11;	 // C11 LOW
+//	GPIOC->BSRR = 0x1UL << 12;   //C12 HIGH
 
   ScreenSetup();
   HAL_GPIO_WritePin(GPIOA, ONBOARD_LED_Pin, 1);
